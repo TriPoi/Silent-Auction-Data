@@ -31,8 +31,9 @@ document.getElementById("bid-form").addEventListener("submit", (e) => {
 // Update Table
 function updateTable() {
   const tbody = document.querySelector("#bids-table tbody");
-  tbody.innerHTML = "";
+  tbody.innerHTML = ""; // Clear the table before re-rendering
 
+  // Recreate table rows in reverse order
   bids.forEach((bid, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -41,7 +42,7 @@ function updateTable() {
       <td>${bid.bidAmount.toFixed(2)}</td>
       <td><button onclick="removeBid(${index})">Remove</button></td>
     `;
-    tbody.prepend(row);
+    tbody.appendChild(row); // Append rows to the table
   });
 }
 
