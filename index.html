@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silent Auction Tool</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Silent Auction Tool</h1>
+
+    <!-- Input Form -->
+    <form id="bid-form">
+      <input type="text" id="item-code" placeholder="Item Code (e.g., A17)" required>
+      <input type="number" id="bidder-number" placeholder="Bidder Number" required>
+      <input type="number" id="bid-amount" placeholder="Bid Amount ($)" step="0.01" required>
+      <button type="submit">Add Bid</button>
+    </form>
+
+    <!-- Table of Bids -->
+    <h2>Bids</h2>
+    <div class="table-container">
+      <table id="bids-table">
+        <thead>
+          <tr>
+            <th>Item Code</th>
+            <th>Bidder Number</th>
+            <th>Bid Amount ($)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Download Chart -->
+    <button id="download-chart">Download Chart</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</h
+tml>
