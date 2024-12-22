@@ -4,7 +4,6 @@ const bids = [];
 document.getElementById("bid-form").addEventListener("submit", (e) => {
   e.preventDefault();
 
-  // Get input values
   const itemCode = document.getElementById("item-code").value.trim();
   const bidderNumber = parseInt(document.getElementById("bidder-number").value.trim(), 10);
   const bidAmount = parseFloat(document.getElementById("bid-amount").value.trim());
@@ -31,9 +30,8 @@ document.getElementById("bid-form").addEventListener("submit", (e) => {
 // Update Table
 function updateTable() {
   const tbody = document.querySelector("#bids-table tbody");
-  tbody.innerHTML = ""; // Clear the table before re-rendering
+  tbody.innerHTML = "";
 
-  // Recreate table rows in reverse order
   bids.forEach((bid, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -42,7 +40,7 @@ function updateTable() {
       <td>${bid.bidAmount.toFixed(2)}</td>
       <td><button onclick="removeBid(${index})">Remove</button></td>
     `;
-    tbody.appendChild(row); // Append rows to the table
+    tbody.appendChild(row);
   });
 }
 
@@ -54,21 +52,37 @@ function removeBid(index) {
   }
 }
 
-// Download Chart
+// Download Chart with Sorted and Aggregated Data
 document.getElementById("download-chart").addEventListener("click", () => {
   if (bids.length === 0) {
     alert("No bids to download!");
     return;
   }
 
-  const csvContent = "data:text/csv;charset=utf-8,"
-    + "Item Code,Bidder Number,Bid Amount ($)\n"
-    + bids.map(bid => `${bid.itemCode},${bid.bidderNumber},${bid.bidAmount.toFixed(2)}`).join("\n");
+  // Aggregate data by bidder number
+  const aggregatedData = {};
+  bids.forEach(({ bidderNumber, itemCode, bidAmount }) => {
+    if (!aggregatedData[bidderNumber]) {
+      aggregatedData[bidderNumber] = { items: [], total: 0 };
+    }
+    aggregatedData[bidderNumber].items.push(`${itemCode} ($${bidAmount.toFixed(2)})`);
+    aggregatedData[bidderNumber].total += bidAmount;
+  });
 
+  // Prepare CSV content
+  const sortedBidders = Object.keys(aggregatedData).sort((a, b) => a - b);
+  const csvContent = "data:text/csv;charset=utf-8,"
+    + "Bidder Number,Items Won,Total Amount ($)\n"
+    + sortedBidders.map(bidderNumber => {
+      const { items, total } = aggregatedData[bidderNumber];
+      return `${bidderNumber},"${items.join(", ")}",${total.toFixed(2)}`;
+    }).join("\n");
+
+  // Create and trigger CSV download
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "bids_chart.csv");
+  link.setAttribute("download", "bids_summary.csv");
   document.body.appendChild(link);
 
   link.click();
